@@ -25,6 +25,7 @@ class Demo:
         self.config = config
         #print(f"config \n{config}")
         self.gaze_estimator = GazeEstimator(config)
+
         self.visualizer = Visualizer(self.gaze_estimator.camera)
 
         self.cap = self._create_capture()

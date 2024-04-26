@@ -36,6 +36,9 @@ class GazeEstimator:
         checkpoint = torch.load(self._config.gaze_estimator.checkpoint,
                                 map_location='cpu')
         model.load_state_dict(checkpoint['model'])
+        print(model)
+        for name, param in model.named_parameters():
+            print(name) 
         model.to(torch.device(self._config.device))
         model.eval()
         return model
