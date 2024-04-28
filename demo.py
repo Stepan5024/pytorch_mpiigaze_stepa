@@ -12,6 +12,7 @@ import yacs.config
 from gaze_estimation import GazeEstimationMethod, GazeEstimator
 from gaze_estimation.gaze_estimator.common import (Face, FacePartsName,
                                                    Visualizer)
+from gaze_estimation.gaze_projection.gaze_projection import GazeProjection 
 from gaze_estimation.utils import load_config
 
 logging.basicConfig(level=logging.INFO)
@@ -23,10 +24,14 @@ class Demo:
 
     def __init__(self, config: yacs.config.CfgNode):
         self.config = config
-        #print(f"config \n{config}")
+        print(f"config \n{config}")
         self.gaze_estimator = GazeEstimator(config)
 
         self.visualizer = Visualizer(self.gaze_estimator.camera)
+
+        self.gaze_projection = GazeProjection(screen_width=config.demo.screen_width, 
+                                              screen_height=config.demo.screen_height, 
+                                              camera_fov_deg=config.demo.camera_fov_deg)
 
         self.cap = self._create_capture()
         self.output_dir = self._create_output_dir()
@@ -57,6 +62,7 @@ class Demo:
             self.visualizer.set_image(frame.copy())
             faces = self.gaze_estimator.detect_faces(undistorted)
             for face in faces:
+
                 self.gaze_estimator.estimate_gaze(undistorted, face)
                 self._draw_face_bbox(face)
                 self._draw_head_pose(face)
@@ -179,6 +185,13 @@ class Demo:
             normalized = normalized[:, ::-1]
         cv2.imshow('normalized', normalized)
 
+    def _draw_point_on_screen(self, x: int, y: int) -> None:
+        """Draw a point on the screen at the gaze location."""
+        point_color = (0, 255, 0)  # Green color for the point
+        point_radius = 5  # Radius of the point
+        thickness = -1  # Fill the circle
+        cv2.circle(self.visualizer.image, (x, y), point_radius, point_color, thickness)
+
     def _draw_gaze_vector(self, face: Face) -> None:
         length = self.config.demo.gaze_visualization_length
         if self.config.mode == GazeEstimationMethod.MPIIGaze.name:
@@ -189,14 +202,32 @@ class Demo:
                 pitch, yaw = np.rad2deg(eye.vector_to_angle(eye.gaze_vector))
                 logger.info(
                     f'[{key.name.lower()}] pitch: {pitch:.2f}, yaw: {yaw:.2f}')
+                # TODO определять х, у куда смотрит пользователь на экране
+                x, y = self.gaze_projection.vector_to_screen(pitch, yaw)
+                logger.info(
+                    f'x: {x}, y: {y}')
+                self._draw_point_on_screen(x, y)
+
         elif self.config.mode == GazeEstimationMethod.MPIIFaceGaze.name:
             self.visualizer.draw_3d_line(
                 face.center, face.center + length * face.gaze_vector)
             pitch, yaw = np.rad2deg(face.vector_to_angle(face.gaze_vector))
+
             logger.info(f'[face] pitch: {pitch:.2f}, yaw: {yaw:.2f}')
         else:
             raise ValueError
 
+    def gaze_2d_to_3d(self, pitch: float, yaw: float) -> np.ndarray:
+        """
+        pitch and gaze to 3d vector
+
+        :param gaze: pitch and gaze vector
+        :return: 3d vector
+        """
+        x = -np.cos(pitch) * np.sin(yaw)
+        y = -np.sin(pitch)
+        z = -np.cos(pitch) * np.cos(yaw)
+        return np.array([x, y, z])
 
 def main():
     config = load_config()

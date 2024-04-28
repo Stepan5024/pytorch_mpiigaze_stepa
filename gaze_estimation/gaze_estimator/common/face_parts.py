@@ -24,6 +24,8 @@ class FaceParts:
         self.normalized_gaze_vector: Optional[np.ndarray] = None
         self.gaze_vector: Optional[np.ndarray] = None
 
+        self.rvec = None
+
     @property
     def distance(self) -> float:
         return np.linalg.norm(self.center)

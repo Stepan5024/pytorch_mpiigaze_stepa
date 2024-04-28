@@ -124,6 +124,7 @@ class FaceModel:
                                      tvec,
                                      useExtrinsicGuess=True,
                                      flags=cv2.SOLVEPNP_ITERATIVE)
+        face.rvec = rvec
         rot = Rotation.from_rotvec(rvec)
         face.head_pose_rot = rot
         face.head_position = tvec

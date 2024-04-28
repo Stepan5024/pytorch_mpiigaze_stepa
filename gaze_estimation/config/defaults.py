@@ -114,6 +114,9 @@ config.demo.show_head_pose = True
 config.demo.show_landmarks = True
 config.demo.show_normalized_image = False
 config.demo.show_template_model = False
+config.demo.screen_width = 1280 
+config.demo.screen_height = 720
+config.demo.camera_fov_deg = 60 # угол поля зрения камеры
 
 # cuDNN
 config.cudnn = ConfigNode()
