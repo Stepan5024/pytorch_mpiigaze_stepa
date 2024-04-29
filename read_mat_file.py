@@ -3,7 +3,9 @@ import numpy as np
 import h5py
 
 # Load the MAT file
-mat = scipy.io.loadmat('/media/stepan/Expansion/EyeGazeDataset/MPIIGaze_original/Data/Normalized/p00/day01.mat')
+
+mat = scipy.io.loadmat("F:\\EyeGazeDataset\\MPIIGaze_original\\Data\\Normalized\\p00\\day01.mat")
+#mat = scipy.io.loadmat('/media/stepan/Expansion/EyeGazeDataset/MPIIGaze_original/Data/Normalized/p00/day01.mat')
 # Display the keys and variables in the file
 print("Keys in the MAT file:", mat.keys())
 
@@ -41,16 +43,17 @@ filenames = mat['filenames']
 print(filenames[:10])
 
 # Load the MAT file
-mat = scipy.io.loadmat('/media/stepan/Expansion/EyeGazeDataset/MPIIGaze_original/6 points-based face model.mat')
+mat = scipy.io.loadmat('F:\\EyeGazeDataset\\MPIIGaze_original\\6 points-based face model.mat')
+#mat = scipy.io.loadmat('/media/stepan/Expansion/EyeGazeDataset/MPIIGaze_original/6 points-based face model.mat')
 # Display the keys and variables in the file
-print("Keys in the MAT file:", mat.keys())
+print("6 points-based face model Keys in the MAT file:", mat.keys())
 # Access the 'data' key
 model = mat['model']
 # 'data' is likely a structured array with multiple fields. Let's see what's inside.
 print("Fields in 'model':", model.dtype.names)
 print(model)
 
-file_path = '/media/stepan/Expansion/EyeGazeDataset/MPIIFaceGaze_normalized/p00.mat'
+"""file_path = '/media/stepan/Expansion/EyeGazeDataset/MPIIFaceGaze_normalized/p00.mat'
 
 # Настройка форматирования вывода для numpy
 np.set_printoptions(suppress=True, precision=4)
@@ -77,3 +80,5 @@ with h5py.File(file_path, 'r') as file:
                 else:
                     # Subitem is a nested Group
                     print(f"   - {subkey}: (Nested Group)")
+
+                    """
