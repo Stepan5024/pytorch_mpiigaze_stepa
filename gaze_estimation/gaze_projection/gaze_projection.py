@@ -41,5 +41,4 @@ def main():
     x, y = gaze_projection.vector_to_screen(vector)
     print(f'Gaze is projected at screen coordinates: ({x}, {y})')
 
-if __name__ == '__main__':
-    main()
+
